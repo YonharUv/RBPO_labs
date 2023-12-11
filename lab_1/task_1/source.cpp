@@ -48,6 +48,7 @@ void WritePersonData(string& name, string& height, string& weight, const unsigne
 	cout << "Возраст: " << (*age) << endl;
 	cout << "Зарплата: " << salary_str << endl;
 }
+#ifndef DO_NOT_DEFINE_MAIN
 int main() {
 
 	unsigned short weight, age;
@@ -61,4 +62,4 @@ int main() {
 	salary_str = to_string(salary);
 	WritePersonData(name, height_str, weight_str, &age);
 }
-
+#endif
