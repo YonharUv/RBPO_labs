@@ -86,15 +86,21 @@ public:
 
 	Complex& operator*=(Complex rhs)
 	{
-		m_re *= rhs.m_re;
-		m_im *= rhs.m_im;
+		double re = m_re * rhs.m_re - m_im * rhs.m_im;
+		double im = m_re * rhs.m_im + m_im * rhs.m_re;
+		m_re = re;
+		m_im = im;
 		return *this;
 	}
 
 	Complex& operator/=(Complex rhs)
 	{
-		m_re /= rhs.m_re;
-		m_im /= rhs.m_im;
+		double reLeft = m_re, reRight = rhs.m_re, re;
+		double imLeft = m_im, imRight = rhs.m_im, im;
+		re = (reLeft * reRight + imLeft * imRight) / (reRight * reRight + imRight * imRight);
+		im = (reRight * imLeft - reLeft * imRight) / (reRight * reRight + imRight * imRight);
+		m_re = re;
+		m_im = im;
 		return *this;
 	}
 	friend Complex operator+(const Complex&, const Complex&);
@@ -255,16 +261,22 @@ public:
 
 	Rational& operator+=(Rational rhs)
 	{
-		m_nominator += rhs.m_nominator;
-		m_denominator += rhs.m_denominator;
+		int denominator = FindLeastCommonMultiple(m_denominator, rhs.m_denominator);
+		int nominator = denominator / m_denominator * m_nominator;
+		nominator += denominator / rhs.m_denominator * rhs.m_nominator;
+		m_nominator = nominator;
+		m_denominator = denominator;
 		norm();
 		return *this;
 	}
 
 	Rational& operator-=(Rational rhs)
 	{
-		m_nominator -= rhs.m_nominator;
-		m_denominator -= rhs.m_denominator;
+		int denominator = FindLeastCommonMultiple(m_denominator, rhs.m_denominator);
+		int nominator = denominator / m_denominator * m_nominator;
+		nominator -= denominator / rhs.m_denominator * rhs.m_nominator;
+		m_nominator = nominator;
+		m_denominator = denominator;
 		norm();
 		return *this;
 	}
@@ -279,8 +291,8 @@ public:
 
 	Rational& operator/=(Rational rhs)
 	{
-		m_nominator /= rhs.m_nominator;
-		m_denominator /= rhs.m_denominator;
+		m_nominator *= rhs.m_denominator;
+		m_denominator *= rhs.m_nominator;
 		norm();
 		return *this;
 	}
